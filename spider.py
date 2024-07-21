@@ -21,6 +21,7 @@ class bballSpiderSpider(CrawlSpider):
         stl = response.css("div.identity__stats li:nth-child(4) span.identity__stats__stat::text").getall()
         blk = response.css("div.identity__stats li:last-child span.identity__stats__stat::text").getall()
         position = response.css("div.identity__description li:last-child::text").getall()
+        photo = response.css("div.identity__picture img::attr(src)").getall()
         for player_name in player_names:
             yield {"Player Name": player_name, 
                    "Position" : position,
@@ -29,11 +30,10 @@ class bballSpiderSpider(CrawlSpider):
                    "Rebounds" : reb,
                    "Assists" : ast,
                    "Steals" : stl,
-                   "Blocks" : blk
+                   "Blocks" : blk,
+                   "Photo URL" : photo
                    }
                    
-                   
-    
             
 process = CrawlerProcess(
     settings={
