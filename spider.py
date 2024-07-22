@@ -1,7 +1,10 @@
 from scrapy.crawler import CrawlerProcess
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
+from tokenRemover import removeToken
 import scrapy
+import json
+
 
 class bballSpiderSpider(CrawlSpider):
     name = "bbalSpider"
@@ -13,8 +16,10 @@ class bballSpiderSpider(CrawlSpider):
     rules =  (Rule(LinkExtractor(allow=(r"/player/",)), callback="parse"),)
 
     def parse(self, response):
+        dict = {}
         player_names = response.css("li.breadcrumb-item.active>span::text").getall()
-        previous_teams = response.css("section.banner__table--competitions a.list-team-entry::attr(title)").getall()
+        previous_teams = response.css("div#player-stats-regular a.list-team-entry::attr(title)").getall()
+        previous_years = response.css("div#player-stats-regular a.average-stats-season::attr(title)").getall()
         pts = response.css("div.identity__stats li:first-child span.identity__stats__stat::text").getall()
         reb = response.css("div.identity__stats li:nth-child(2) span.identity__stats__stat::text").getall()
         ast = response.css("div.identity__stats li:nth-child(3) span.identity__stats__stat::text").getall()
@@ -22,16 +27,20 @@ class bballSpiderSpider(CrawlSpider):
         blk = response.css("div.identity__stats li:last-child span.identity__stats__stat::text").getall()
         position = response.css("div.identity__description li:last-child::text").getall()
         photo = response.css("div.identity__picture img::attr(src)").getall()
+        for i in range(len(previous_teams)):
+            dict[previous_years[i]] = previous_teams[i]
+        y = json.dumps(dict)
+        dict = {}
         for player_name in player_names:
             yield {"Player Name": player_name, 
-                   "Position" : position,
-                   "Previous teams" : previous_teams,
-                   "Points" : pts,
-                   "Rebounds" : reb,
-                   "Assists" : ast,
-                   "Steals" : stl,
-                   "Blocks" : blk,
-                   "Photo URL" : photo
+                   "Position" : removeToken(position),
+                   "Previous teams" : removeToken(y),      
+                   "Points" : removeToken(pts),
+                   "Rebounds" : removeToken(reb),
+                   "Assists" : removeToken(ast),
+                   "Steals" : removeToken(stl),
+                   "Blocks" : removeToken(blk),
+                   "Photo URL" : removeToken(photo)
                    }
                    
             
