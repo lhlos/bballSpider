@@ -2,9 +2,7 @@ from scrapy.crawler import CrawlerProcess
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from tokenRemover import removeToken
-import scrapy
 import json
-
 
 class bballSpiderSpider(CrawlSpider):
     name = "bbalSpider"
@@ -26,15 +24,15 @@ class bballSpiderSpider(CrawlSpider):
         stl = response.css("div.identity__stats li:nth-child(4) span.identity__stats__stat::text").getall()
         blk = response.css("div.identity__stats li:last-child span.identity__stats__stat::text").getall()
         position = response.css("div.identity__description li:last-child::text").getall()
-        photo = response.css("div.identity__picture img::attr(src)").getall()
+        photo = response.css("div.identity__picture img::attr(src)").getall() 
         for i in range(len(previous_teams)):
             dict[previous_years[i]] = previous_teams[i]
-        y = json.dumps(dict)
+        previousDict = json.dumps(dict)
         dict = {}
         for player_name in player_names:
             yield {"Player Name": player_name, 
                    "Position" : removeToken(position),
-                   "Previous teams" : removeToken(y),      
+                   "Previous teams" : removeToken(previousDict),      
                    "Points" : removeToken(pts),
                    "Rebounds" : removeToken(reb),
                    "Assists" : removeToken(ast),
@@ -42,16 +40,4 @@ class bballSpiderSpider(CrawlSpider):
                    "Blocks" : removeToken(blk),
                    "Photo URL" : removeToken(photo)
                    }
-                   
-            
-process = CrawlerProcess(
-    settings={
-        "FEEDS": {
-            "players0.json": {"format": "json"},
-        },
-    }
-)
-
-process.crawl(bballSpiderSpider)
-process.start()
 
