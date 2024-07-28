@@ -23,11 +23,13 @@ class bballSpiderSpider(CrawlSpider):
         dict = {}
         player_name = response.css("li.breadcrumb-item.active>span::text").getall()
         position = response.css("div.identity__description li:last-child::text").getall()
+        Ethnicity = response.css("div.identity__description li:nth-child(2)::text").getall()
         photo = response.css("div.identity__picture img::attr(src)").getall() 
         tbody = response.css("#player-stats-regular > div:nth-child(1) > div:nth-child(1) > table:nth-child(1) > tbody:nth-child(2)")
         rows = getStatsFromTable(tbody)
         playerEntry = {"Name" : player_name[0],
                        "Position" : position[0].strip(),
+                       "Ethnicity" : Ethnicity[0],
                        "Photo" : photo[0],
                        "Stats" : createStatEntry(rows)}  
         
