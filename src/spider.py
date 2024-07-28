@@ -1,10 +1,8 @@
 from scrapy.crawler import CrawlerProcess
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
-from tokenRemover import removeToken
-from extractStatsFromTable import getStatsFromTable, createStatEntry
-import json
-import sys
+from src.tokenRemover import removeToken
+from src.extractStatsFromTable import getStatsFromTable, createStatEntry
 
 class bballSpiderSpider(CrawlSpider):
     visitedUrls = set()
@@ -20,7 +18,6 @@ class bballSpiderSpider(CrawlSpider):
         if URL in self.visitedUrls: 
             return
         self.visitedUrls.add(URL)
-        dict = {}
         player_name = response.css("li.breadcrumb-item.active>span::text").getall()
         position = response.css("div.identity__description li:last-child::text").getall()
         Ethnicity = response.css("div.identity__description li:nth-child(2)::text").getall()
