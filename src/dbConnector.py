@@ -11,7 +11,7 @@ try:
     connection = mysql.connector.connect(host='localhost',
                                          database='lhlosdb',
                                          user='root',
-                                         password='ellinas123')
+                                         password='*******')
     if connection.is_connected():
         db_Info = connection.get_server_info()
         print("Connected to MySQL Server version ", db_Info)
